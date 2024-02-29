@@ -96,27 +96,34 @@ class SSH(Terminal):
             except socket.error as err:
                 retry -= 1
                 logger.error(
-                    "SSH Socket Error: {}. Checking back in: {}".format(
-                        str(err), self.RETRY_BACKOFF
+                        "SSH Socket Error: {} on host: {}. Checking back in: {}".format(
+                        str(err), self.host, self.RETRY_BACKOFF
                     )
                 )
                 sleep(self.RETRY_BACKOFF)
             except paramiko.BadHostKeyException as err:
                 retry -= 1
                 logger.error(
-                    "SSH Bad Host Key Error: {}.Checking back in: {}".format(
-                        str(err), self.RETRY_BACKOFF
+                    "SSH Bad Host Key Error: {} on host: {}. Checking back in: {}".format(
+                        str(err), self.host, self.RETRY_BACKOFF
                     )
                 )
                 sleep(self.RETRY_BACKOFF)
             except paramiko.AuthenticationException as err:
                 retry -= 1
                 logger.error(
-                    "SSH Auth Error: {}. Checking back in: {}".format(
-                        str(err), self.RETRY_BACKOFF
+                    "SSH Auth Error: {} on host: {}. Checking back in: {}".format(
+                        str(err), self.host, self.RETRY_BACKOFF
                     )
                 )
                 sleep(self.RETRY_BACKOFF)
+            except paramiko.SSHException as err:
+                retry -= 1
+                logger.error(
+                    "SSH Error: {} on host: {}. Checking back in: {}".format(
+                        str(err), self.host, self.RETRY_BACKOFF
+                    )
+                )
         else:
             raise RuntimeError("open_fail: port not ready")
 
